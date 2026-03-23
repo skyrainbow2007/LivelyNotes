@@ -292,9 +292,19 @@
             select, input[type="text"], input[type="number"] { background: rgba(255,255,255,0.2); }
 
             /* 全局关闭所有过渡动画，滚动更流畅 */
-            * { transition: none !important; }
+            *:not(select):not(option):not(input):not(button) { transition: none !important; }
             /* 只保留播放状态的动画（功能必要） */
             .note-display.playing { transition: transform 0.1s !important; }
+            /* select 下拉层不能被裁剪 */
+            .panel { overflow: visible; }
+            /* 确保 select 可点击 */
+            select {
+                position: relative;
+                z-index: 10;
+                pointer-events: auto;
+                -webkit-appearance: auto;
+                appearance: auto;
+            }
 
             /* GPU 加速滚动层 */
             .melody-display { transform: translateZ(0); }
