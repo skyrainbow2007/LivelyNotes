@@ -297,6 +297,13 @@
             .note-display.playing { transition: transform 0.1s !important; }
             /* select 下拉层不能被裁剪 */
             .panel { overflow: visible; }
+            /* 禁止伪元素遮挡触摸事件 */
+            .panel::before,
+            .panel::after,
+            .container::before,
+            .container::after {
+                pointer-events: none !important;
+            }
             /* 确保 select 可点击 */
             select {
                 position: relative;
