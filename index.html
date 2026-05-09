@@ -549,7 +549,7 @@
             font-family: 'Playfair Display', 'Noto Sans SC', serif;
             font-size: 4rem;
             font-weight: 900;
-            background: linear-gradient(135deg, #ffffff 0%, #f093fb 50%, #4facfe 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #ff902e  50%, #4facfe 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -1879,8 +1879,8 @@
 <body>
     <div class="container">
         <!-- 修改位置：在 header 部分，logo 和 ai-badge 之间 -->
-<header>
-    <div class="logo">
+<header style="display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 20px; align-items: flex-start;">
+    <div class="logo" style="grid-column: 1 / 4;">
         <div class="logo-icon">
             <i class="fas fa-music"></i>
         </div>
@@ -1890,7 +1890,7 @@
         </div>
     </div>
     
-    <div style="display: flex; align-items: center; gap: 20px; margin-left: auto;">
+    <div style="grid-column: 1; display: flex; align-items: center;">
         <div class="ai-badge">
             <i class="fas fa-robot"></i>
             <span>智能作曲引擎 | 和弦分析 | 多风格旋律生成</span>
@@ -2004,9 +2004,6 @@
                     <button id="playBtn" class="mint-btn">
                         <i class="fas fa-play"></i> 播放音频
                     </button>
-                    <button id="stopBtn" class="warning-btn">
-                        <i class="fas fa-stop"></i> 停止播放
-                    </button>
                     <button id="saveMelodyBtn" class="sky-btn">
                         <i class="fas fa-save"></i> 保存旋律
                     </button>
@@ -2018,6 +2015,9 @@
                     </button>
                     <button id="exportMidiBtn" class="gold-btn">
                         <i class="fas fa-file-audio"></i> 导出MIDI
+                    </button>
+                    <button id="advancedEditBtn" class="warning-btn">
+                        <i class="fas fa-sliders-h"></i> 高级编曲
                     </button>
                 </div>
             </div>
@@ -2401,14 +2401,20 @@
             // 绑定事件监听器
             document.getElementById('generateBtn').addEventListener('click', generateMelody);
             document.getElementById('randomizeBtn').addEventListener('click', randomizeMelody);
-            document.getElementById('playBtn').addEventListener('click', playMelody);
-            document.getElementById('stopBtn').addEventListener('click', stopAudio);
+            document.getElementById('playBtn').addEventListener('click', function() {
+                if (isPlaying) {
+                    stopAudio();
+                } else {
+                    playMelody();
+                }
+            });
             document.getElementById('saveMelodyBtn').addEventListener('click', saveCurrentMelody);
             document.getElementById('exportJianpuBtn').addEventListener('click', exportJianpuPdf);
             document.getElementById('exportStaffBtn').addEventListener('click', exportStaffPdf);
             document.getElementById('exportMidiBtn').addEventListener('click', exportMidi);
             document.getElementById('copyPromptBtn').addEventListener('click', copyPrompt);
             document.getElementById('clearSavedBtn').addEventListener('click', clearSavedMelodies);
+            document.getElementById('advancedEditBtn').addEventListener('click', enterAdvancedArrangementEditor);
             
             // 绑定滑块值显示
             document.getElementById('bpmRange').addEventListener('input', function() {
@@ -2447,6 +2453,36 @@
         });
         
         // ==================== 核心功能函数 ====================
+        
+        function enterAdvancedArrangementEditor() {
+            if (!currentNotes || currentNotes.length === 0) {
+                showNotification('请先生成旋律，再进入高级编曲编辑', 'warning');
+                return;
+            }
+
+            const advancedData = {
+                notes: currentNotes,
+                bpm: parseInt(document.getElementById('bpmRange').value) || 120,
+                key: document.getElementById('keySelect').value || 'C',
+                mode: (document.getElementById('keySelect').value || 'C').includes('m') ? 'minor' : 'major',
+                timeSignature: document.getElementById('timeSignature').value || '4/4',
+                instrument: currentInstrument || 'piano',
+                bars: parseInt(document.getElementById('barsCount').value) || 8,
+                style: document.getElementById('melodyStyle').value || 'classic',
+                speed: parseInt(document.getElementById('bpmRange').value) || 120,
+                melodyId: currentMelodyId || ('melody_' + Date.now()),
+                savedAt: new Date().toISOString()
+            };
+
+            try {
+                console.log("存入的旋律数据：", advancedData);
+                localStorage.setItem('advanced_arrangement_data', JSON.stringify(advancedData));
+                window.location.href = 'advanced-edit.html';
+            } catch (error) {
+                console.error('保存高级编曲数据失败:', error);
+                showNotification('进入高级编辑失败：浏览器本地存储不可用', 'error');
+            }
+        }
         
         // 显示通知
         function showNotification(message, type = 'info') {
@@ -4816,7 +4852,7 @@
                 const playBtn = document.getElementById('playBtn');
                 playBtn.innerHTML = '<i class="fas fa-pause"></i> 加载音色...';
                 playBtn.classList.add('warning-btn');
-                playBtn.classList.remove('success-btn');
+                playBtn.classList.remove('mint-btn');
                 
                 // 清除之前的timeout
                 playTimeouts.forEach(timeout => clearTimeout(timeout));
@@ -4852,7 +4888,7 @@
 
                 if (!isPlaying) return; // 用户在加载期间点了停止
 
-                playBtn.innerHTML = '<i class="fas fa-pause"></i> 播放中...';
+                playBtn.innerHTML = '<i class="fas fa-stop"></i> 停止播放';
                 
                 let totalTime = 0;
                 
@@ -5153,7 +5189,7 @@
                 const playBtn = document.getElementById('playBtn');
                 playBtn.innerHTML = '<i class="fas fa-play"></i> 播放音频';
                 playBtn.classList.remove('warning-btn');
-                playBtn.classList.add('success-btn');
+                playBtn.classList.add('mint-btn');
             }
             
             isPlaying = false;

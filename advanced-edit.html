@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>灵动音符 - 高级编曲编辑</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&family=Playfair+Display:wght@600;700;900&family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvg@3.0.10/lib/umd.min.js"></script>
+<style>
+:root{--neon:linear-gradient(135deg,#f093fb,#f5576c);--main:linear-gradient(135deg,#667eea,#764ba2);--ocean:linear-gradient(135deg,#11998e,#38ef7d);--gold:linear-gradient(135deg,#f6d365,#fda085);--warn:linear-gradient(135deg,#f7971e,#f5576c);--r:18px;--rl:26px}*{box-sizing:border-box;margin:0;padding:0}body{min-height:100vh;padding:20px;font-family:'Noto Sans SC','Comfortaa',sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;overflow-x:hidden}body:before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 25%,rgba(240,147,251,.32),transparent 45%),radial-gradient(circle at 82% 75%,rgba(74,252,254,.28),transparent 46%);z-index:-1}.shell{max-width:1880px;margin:auto;padding:30px;border-radius:32px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);box-shadow:0 8px 32px rgba(31,38,135,.35);backdrop-filter:blur(28px);position:relative;overflow:hidden}.shell:before{content:'';position:absolute;top:0;left:0;right:0;height:6px;background:var(--neon);box-shadow:0 0 28px rgba(240,147,251,.65)}header{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:24px}.brand{display:flex;align-items:center;gap:18px}.logo{width:68px;height:68px;border-radius:50%;background:var(--neon);display:flex;align-items:center;justify-content:center;font-size:30px;box-shadow:0 0 30px rgba(240,147,251,.5)}h1{font-family:'Playfair Display','Noto Sans SC',serif;font-size:2.7rem;color:transparent;background:linear-gradient(135deg,#fff,#fb93b9,#4facfe);-webkit-background-clip:text;background-clip:text}.sub{color:rgba(255,255,255,.82);margin-top:6px;line-height:1.6}.grid{display:grid;grid-template-columns:minmax(430px,1.25fr) minmax(310px,.8fr) minmax(310px,.8fr);gap:22px}.panel{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);border-radius:var(--rl);padding:22px;box-shadow:0 8px 32px rgba(31,38,135,.15);backdrop-filter:blur(20px);overflow:hidden}.ph{display:flex;gap:13px;align-items:center;padding-bottom:15px;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,.18)}.pi{width:44px;height:44px;border-radius:15px;background:var(--neon);display:flex;align-items:center;justify-content:center;flex:none}h2{font-family:'Playfair Display','Noto Sans SC',serif;font-size:1.35rem}.muted{color:rgba(255,255,255,.76);font-size:.92rem;line-height:1.7}button{border:0;border-radius:16px;padding:12px 16px;font-weight:700;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:.25s;box-shadow:0 6px 18px rgba(0,0,0,.13)}button:hover{transform:translateY(-3px)}.primary{background:var(--main);color:#fff}.secondary{background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.38)}.play{background:var(--ocean);color:#fff}.stop{background:var(--warn);color:#fff}.gold{background:var(--gold);color:#5c3200}.row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center}.tab{padding:8px 17px;border-radius:999px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.28);position:relative;z-index:2;pointer-events:auto}.tab.active{background:var(--neon);color:#fff;border-color:transparent}.score{min-height:220px;background:rgba(255,255,255,.98);color:#4a5568;border-radius:18px;border:2px solid rgba(255,255,255,.42);padding:18px 20px;overflow:auto;max-width:100%}.melody{margin-top:14px;max-height:460px;background:rgba(255,255,255,.08);border-radius:16px;padding:14px;overflow:auto}.placeholder{min-height:120px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.7}#advJianpu svg,#advStaff svg{display:block;max-width:100%;height:auto;margin:0 auto}#advJianpu{line-height:1.8}.meta{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}.card{padding:15px;border-radius:16px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22)}.label{font-size:.8rem;color:rgba(255,255,255,.68);margin-bottom:5px}.val{font-size:1.15rem;font-weight:900}.reuse{border-left:4px solid #2af598}.lesson{display:grid;gap:12px}.lesson h3{font-size:1rem;margin-bottom:8px;display:flex;gap:8px;align-items:center}.status{margin-top:20px;padding:13px 16px;border-radius:16px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);display:flex;gap:10px;align-items:center}.feature{margin-top:14px}.feature h3{font-size:1rem;margin-bottom:10px;display:flex;gap:8px;align-items:center}.input,.select,textarea{width:100%;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.14);color:#fff;font-family:inherit;outline:0}textarea{min-height:72px;resize:vertical}.input::placeholder,textarea::placeholder{color:rgba(255,255,255,.55)}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.chip{padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);font-size:.82rem}.preset-grid{display:flex;flex-direction:column;gap:10px;max-height:220px;overflow-y:auto;overflow-x:hidden;padding-right:4px}.preset{width:100%;text-align:left;padding:11px 12px;border-radius:13px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);cursor:pointer}.preset.active{background:var(--neon)}.slider{display:grid;grid-template-columns:70px 1fr 38px;gap:8px;align-items:center;margin:8px 0}.edit-tools{display:flex;gap:8px;flex-wrap:wrap}.notice{position:fixed;top:22px;right:22px;z-index:1000;max-width:400px;padding:14px 18px;border-radius:16px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);box-shadow:0 8px 32px rgba(0,0,0,.22);backdrop-filter:blur(22px);display:flex;gap:10px;align-items:center}.auto-arrange-actions button{width:100%;justify-content:center}.export-midi-btn{min-width:0}@media(max-width:1280px){.grid{grid-template-columns:1fr}}@media(max-width:768px){body{padding:8px}.shell{padding:18px 10px}h1{font-size:1.8rem}.logo{width:54px;height:54px}.meta{grid-template-columns:1fr}.panel{padding:16px 12px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header><div class="brand"><div class="logo"><i class="fas fa-music"></i></div><div><h1>高级编曲编辑</h1><p class="sub">独立高级编辑工作台</p></div></div><div class="row"><button class="secondary" onclick="goHome()"><i class="fas fa-arrow-left"></i>返回首页</button><button id="reloadBtn" class="primary" onclick="reloadArrangementData()"><i class="fas fa-sync-alt"></i>重新载入旋律</button></div></header>
+<main class="grid">
+<section class="panel"><div class="ph"><div class="pi"><i class="fas fa-edit"></i></div><div><h2>乐谱可视化编辑区</h2><p class="muted">查看并编辑当前旋律的简谱、五线谱与音符片段。</p></div></div><div class="row"><button id="tabJ" class="tab active" onclick="switchAdvancedScore('jianpu')"><i class="fas fa-list-ol"></i>简谱</button><button id="tabS" class="tab" onclick="switchAdvancedScore('staff')"><i class="fas fa-music"></i>五线谱</button></div><div id="advJianpu" class="score"></div><div id="advStaff" class="score" style="display:none"></div><div class="row edit-tools"><button class="secondary" onclick="editSelectedNote(1)"><i class="fas fa-arrow-up"></i>升高音符</button><button class="secondary" onclick="editSelectedNote(-1)"><i class="fas fa-arrow-down"></i>降低音符</button><button class="secondary" onclick="changeSelectedDuration()"><i class="fas fa-clock"></i>调整时值</button><button class="secondary" onclick="copySegment()"><i class="fas fa-copy"></i>复制片段</button><button class="secondary" onclick="deleteSegment()"><i class="fas fa-trash"></i>删除片段</button><button class="secondary" onclick="validateTheory()"><i class="fas fa-check-circle"></i>乐理校验</button></div><div id="advMelody" class="melody"><div class="placeholder">旋律音符将在这里显示</div></div></section>
+<section class="panel"><div class="ph"><div class="pi"><i class="fas fa-sliders-h"></i></div><div><h2>高级功能控制区</h2><p class="muted">灵感输入、风格预设、自动编曲、播放与导出集中控制。</p></div></div><div class="meta"><div class="card"><div class="label">调式</div><div id="mKey" class="val">-</div></div><div class="card"><div class="label">拍号</div><div id="mSig" class="val">-</div></div><div class="card"><div class="label">BPM</div><div id="mBpm" class="val">-</div></div><div class="card"><div class="label">乐器</div><div id="mIns" class="val">-</div></div><div class="card"><div class="label">小节数</div><div id="mBars" class="val">-</div></div><div class="card"><div class="label">音符数</div><div id="mNotes" class="val">-</div></div></div><div class="row"><button id="exportJianpuBtn" class="secondary"><i class="fas fa-list-ol"></i>导出简谱PDF</button><button id="exportStaffBtn" class="secondary"><i class="fas fa-music"></i>导出五线谱PDF</button></div><div class="card feature"><h3><i class="fas fa-lightbulb"></i>多模态灵感输入</h3><textarea id="ideaText" placeholder="例如：轻快校园民谣，温暖治愈，适合毕业季"></textarea><div class="row"><button class="primary" onclick="applyTextIdea()"><i class="fas fa-wand-magic-sparkles"></i>解析并生成</button><button id="recordBtn" class="secondary" onclick="toggleHumming()"><i class="fas fa-microphone"></i>哼唱识别</button></div><div id="ideaTags" class="chips"></div></div><div class="card feature"><h3><i class="fas fa-palette"></i>一键风格预设</h3><div id="presetGrid" class="preset-grid"></div></div><div class="card feature"><h3><i class="fas fa-layer-group"></i>自动完整编曲</h3><div class="row auto-arrange-actions"><button class="primary" onclick="autoArrange()"><i class="fas fa-magic"></i>生成和弦+鼓点</button><button id="previewArrangeBtn" class="play" onclick="togglePreviewArrangement()"><i class="fas fa-headphones"></i><span id="previewArrangeBtnText">预览完整编曲</span></button><button id="stopArrangeBtn" class="stop" onclick="stopArrangement()"><i class="fas fa-stop"></i>停止播放</button><button id="exportArrangementMidiBtn" class="gold export-midi-btn"><i class="fas fa-file-audio"></i>导出MIDI</button></div><div class="slider"><span>旋律</span><input id="melVol" type="range" min="0" max="100" value="85" oninput="updateVols()"><b id="melVolTxt">85</b></div><div class="slider"><span>和弦</span><input id="chordVol" type="range" min="0" max="100" value="60" oninput="updateVols()"><b id="chordVolTxt">60</b></div><div class="slider"><span>鼓点</span><input id="drumVol" type="range" min="0" max="100" value="55" oninput="updateVols()"><b id="drumVolTxt">55</b></div><p id="arrangeInfo" class="muted">尚未生成伴奏。</p></div></section>
+<aside class="panel"><div class="ph"><div class="pi"><i class="fas fa-graduation-cap"></i></div><div><h2>音乐教学辅助区</h2><p class="muted">跟唱练习、和弦标注、节奏分析与乐理提示。</p></div></div><div class="lesson"><div class="card"><h3><i class="fas fa-key"></i>调式说明</h3><p id="lKey" class="muted">载入后显示。</p></div><div class="card"><h3><i class="fas fa-drum"></i>节奏说明</h3><p id="lRhythm" class="muted">载入后显示。</p></div><div class="card"><h3><i class="fas fa-guitar"></i>和弦概览</h3><p id="lChords" class="muted">载入后显示。</p></div><div class="card"><h3><i class="fas fa-wave-square"></i>节奏型标注</h3><p id="lPattern" class="muted">载入后分析旋律节奏密度与常用时值。</p></div><div class="card"><h3><i class="fas fa-person-chalkboard"></i>跟唱练习</h3><p id="lPractice" class="muted">播放旋律时，平台将同步使用原有音符高亮能力辅助跟唱。</p></div><div class="card"><h3><i class="fas fa-print"></i>打印练习</h3><p class="muted">可用中间区域导出按钮生成 PDF 供学生打印。</p></div></div></aside>
+</main><div id="status" class="status"><i class="fas fa-circle-notch fa-spin"></i><span>正在初始化...</span></div>
+</div>
+<script>
+const KEY='advanced_arrangement_data',TEMP='__advanced_edit_temp_melody__';let data=null,active='jianpu',selectedNoteIndex=0,recording=false,mediaRecorder=null,recordChunks=[],arrangement={chords:[],drums:[],vol:{melody:85,chord:60,drum:55}},arrAudio={ctx:null,nodes:[],playing:false,fx:null},selection={start:0,end:0,dragFrom:null,box:false},teachTimers=[];
+const PRESETS=[['国风','D','4/4',86,'guzheng'],['流行','C','4/4',118,'piano'],['电子','Am','4/4',128,'synth'],['古典','C','4/4',112,'piano'],['华尔兹','F','3/4',96,'strings'],['爵士','Bb','4/4',105,'electricPiano'],['蓝调','G','4/4',92,'electricPiano'],['民谣','G','6/8',88,'guitar'],['摇滚','Em','4/4',142,'synth'],['R&B','Am','4/4',82,'electricPiano'],['校园','C','4/4',108,'piano'],['治愈','F','4/4',72,'piano'],['史诗','Dm','4/4',132,'strings'],['电影','Eb','4/4',84,'strings'],['拉丁','A','4/4',124,'flute'],['进行曲','D','2/4',120,'strings'],['儿歌','C','2/4',100,'piano'],['LoFi','Am','4/4',76,'electricPiano'],['梦幻','F','6/8',70,'synth'],['朋克','A','4/4',168,'synth'],['古筝叙事','D','4/4',78,'guzheng'],['轻快舞曲','G','4/4',126,'synth']];
+function status(t,spin=false){document.getElementById('status').innerHTML=`<i class="fas ${spin?'fa-circle-notch fa-spin':'fa-info-circle'}"></i><span>${t}</span>`}function notice(t){document.querySelectorAll('.notice').forEach(n=>n.remove());const d=document.createElement('div');d.className='notice';d.innerHTML=`<i class="fas fa-info-circle"></i><span>${t}</span>`;document.body.appendChild(d);setTimeout(()=>d.remove(),3000)}function goHome(){stopArrangement();location.href='index.html'}
+function readData(){const rawData=localStorage.getItem(KEY);if(!rawData){alert('未检测到旋律数据，请先在首页生成旋律后再进入！');window.location.href='index.html';return null}try{const melodyData=JSON.parse(rawData);console.log('读取到的旋律数据：',melodyData);return melodyData}catch(e){console.error(e);alert('旋律数据解析失败，请回到首页重新生成旋律。');window.location.href='index.html';return null}}function norm(x){if(!x)return null;return{id:TEMP,name:'高级编曲临时旋律',notes:Array.isArray(x.notes)?x.notes:[],key:x.key||'C',timeSig:x.timeSignature||x.timeSig||'4/4',bpm:parseInt(x.bpm||x.speed||120),style:x.style||'classic',instrument:x.instrument||'piano',bars:parseInt(x.bars||8),timestamp:x.savedAt||new Date().toISOString()}}
+function saveTemp(m){const arr=JSON.parse(localStorage.getItem('savedMelodies')||'[]').filter(i=>i.id!==TEMP);arr.push(m);localStorage.setItem('savedMelodies',JSON.stringify(arr))}
+function renderLocalFallback(){if(!data)return;renderJianpuAdvanced(data.notes,data.key,data.timeSig);renderStaffAdvanced(data.notes,data.key,data.timeSig);advMelody.style.position='relative';advMelody.innerHTML=`<div id="melodySelectBox" style="display:none;position:absolute;border:1px dashed rgba(255,255,255,.8);background:rgba(255,255,255,.15);pointer-events:none"></div><div id="melodyCards">${data.notes.map((n,i)=>{const inSel=i>=Math.min(selection.start,selection.end)&&i<=Math.max(selection.start,selection.end);return `<div class="card note-card" data-note-index="${i}" draggable="true" style="display:inline-block;margin:5px;cursor:move;${inSel?'outline:2px solid #f093fb;':''}"><b>${n.name||'休止'}</b><br><span class="muted">${n.duration||'4n'} · ${n.chord||''}</span></div>`}).join('')}</div>`;bindMelodyEditEvents();status('旋律数据已读取，编辑与编曲功能可用。')}
+function renderJianpuAdvanced(notes,key,timeSig){
+const container=document.getElementById('advJianpu');
+if(!container)return;
+container.innerHTML='';
+if(!notes||!notes.length){container.innerHTML='<div class="placeholder">暂无旋律数据</div>';return}
+const majorScales={'C':['C','D','E','F','G','A','B'],'G':['G','A','B','C','D','E','F#'],'D':['D','E','F#','G','A','B','C#'],'A':['A','B','C#','D','E','F#','G#'],'F':['F','G','A','Bb','C','D','E'],'Bb':['Bb','C','D','Eb','F','G','A'],'Eb':['Eb','F','G','Ab','Bb','C','D'],'Am':['A','B','C','D','E','F','G'],'Em':['E','F#','G','A','B','C','D'],'Dm':['D','E','F','G','A','Bb','C']};
+const scale=majorScales[key]||majorScales.C;
+const toNum=(name)=>{if(!name||name==='rest')return{num:'0',dots:0};const m=String(name).match(/^([A-G][#b]?)(\d)$/);if(!m)return{num:'0',dots:0};let idx=scale.indexOf(m[1]);if(idx<0){const base=m[1][0];idx=scale.findIndex(s=>s[0]===base)}if(idx<0)idx=0;return{num:String(idx+1),dots:parseInt(m[2])-4}};
+const durLabel=(d)=>({lines:d==='16n'?2:(d==='8n'||d==='8n.'?1:0),dot:/\.$/.test(d),dash:d==='1n'?3:(d==='2n'||d==='2n.'?1:0)});
+const measures=splitMeasures(notes,timeSig);
+const beatsPerBar=timeSig==='6/8'?3:(parseInt(String(timeSig).split('/')[0])||4);
+const W=920,barsPerRow=4,rowH=84,topPad=56,leftPad=44,rightPad=20,totalRows=Math.ceil(measures.length/barsPerRow),H=topPad+totalRows*rowH+24,rowW=W-leftPad-rightPad,barW=rowW/barsPerRow,innerW=barW-10,unitW=innerW/beatsPerBar;
+let svg=[];svg.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="background:#fff;border-radius:12px">`);
+svg.push(`<text x="${W/2}" y="28" font-family="serif" font-size="16" font-weight="bold" fill="#222" text-anchor="middle">${key}${String(key).includes('m')?'小调':'大调'}　${timeSig}</text>`);
+measures.forEach((barNotes,barIdx)=>{const row=Math.floor(barIdx/barsPerRow),col=barIdx%barsPerRow,barX=leftPad+col*barW,barY=topPad+row*rowH,numY=barY+38;svg.push(`<line x1="${barX}" y1="${barY+14}" x2="${barX}" y2="${barY+56}" stroke="#444" stroke-width="${col===0?2:1}"/>`);let noteX=barX+5;const slots=barNotes.map(n=>{const w=(n.durationInBeats||1)*unitW;const o={n,x:noteX,w};noteX+=w;return o});slots.forEach((slot,ni)=>{const n=slot.n,isRest=n.isRest||n.name==='rest',jp=toNum(n.name),dl=durLabel(n.duration),digitCx=slot.x+unitW/2;if(ni===0&&n.chord)svg.push(`<text x="${slot.x+2}" y="${barY+13}" font-family="sans-serif" font-size="10" fill="#667eea" font-weight="bold">${n.chord}</text>`);svg.push(`<text x="${digitCx}" y="${numY}" font-family="serif" font-size="18" fill="${isRest?'#aaa':'#111'}" text-anchor="middle" font-weight="bold">${jp.num}</text>`);if(isRest)return;if(jp.dots>0){for(let d=0;d<jp.dots;d++)svg.push(`<circle cx="${digitCx}" cy="${numY-24-d*7}" r="2.2" fill="#222"/>`)}else if(jp.dots<0){for(let d=0;d<Math.abs(jp.dots);d++)svg.push(`<circle cx="${digitCx}" cy="${numY+10+d*7}" r="2.2" fill="#222"/>`)}if(dl.dot)svg.push(`<circle cx="${digitCx+11}" cy="${numY-4}" r="2" fill="#222"/>`);for(let ds=0;ds<dl.dash;ds++){const cx=slot.x+unitW*(ds+1)+unitW/2,hh=unitW*0.38;svg.push(`<line x1="${cx-hh}" y1="${numY-6}" x2="${cx+hh}" y2="${numY-6}" stroke="#111" stroke-width="1.8"/>`)}if(dl.lines>=1)svg.push(`<line x1="${slot.x+1}" y1="${numY+7}" x2="${slot.x+slot.w-1}" y2="${numY+7}" stroke="#222" stroke-width="1.8"/>`);if(dl.lines>=2)svg.push(`<line x1="${slot.x+1}" y1="${numY+12}" x2="${slot.x+slot.w-1}" y2="${numY+12}" stroke="#222" stroke-width="1.8"/>`)});const rx=barX+barW,isLast=barIdx===measures.length-1;svg.push(`<line x1="${rx}" y1="${barY+14}" x2="${rx}" y2="${barY+56}" stroke="#444" stroke-width="${isLast?2.5:1}"/>`);if(isLast)svg.push(`<line x1="${rx-4}" y1="${barY+14}" x2="${rx-4}" y2="${barY+56}" stroke="#444" stroke-width="1"/>`)});
+svg.push('</svg>');
+container.innerHTML=svg.join('');
+}
+function splitMeasures(notes,timeSig){const beats=timeSig==='6/8'?3:(parseInt(String(timeSig).split('/')[0])||4);const out=[];let cur=[],sum=0;const r=v=>Math.round(v*1000000)/1000000;for(let i=0;i<notes.length;i++){const n={...notes[i]},d=r(n.durationInBeats||durBeat(n.duration));if(r(sum+d)>r(beats)+1e-6){if(cur.length)out.push(cur);cur=[];sum=0;i--;continue}cur.push(n);sum=r(sum+d);if(Math.abs(sum-beats)<1e-6){out.push(cur);cur=[];sum=0}}if(cur.length){const lack=r(beats-sum);if(lack>=0.25)cur.push({name:'rest',duration:durationBeatsToNotation(lack),durationInBeats:lack,isRest:true,chord:''});out.push(cur)}return out}
+function durationBeatsToNotation(beats){const t=Math.round(beats*1000)/1000;if(t>=4)return'1n';if(t>=3)return'2n.';if(t>=2)return'2n';if(t>=1.5)return'4n.';if(t>=1)return'4n';if(t>=0.75)return'8n.';if(t>=0.5)return'8n';return'16n'}
+function renderStaffAdvanced(notes,key,timeSig){
+const container=document.getElementById('advStaff');
+if(!container)return;
+container.innerHTML='';
+if(!notes||!notes.length){container.innerHTML='<div class="placeholder">暂无旋律数据</div>';return}
+if(window.VexFlow&&window.VexFlow.Stave){
+try{return renderStaffWithVexFlowAdvanced(notes,key,timeSig)}catch(e){console.warn('advanced vexflow render failed',e)}
+}
+return renderStaffWithSvgAdvanced(notes,key,timeSig)
+}
+function renderStaffWithVexFlowAdvanced(notes,key,timeSig){
+const VF=window.VexFlow;const container=document.getElementById('advStaff');
+const minorToMajor={Am:'C',Em:'G',Dm:'F',Bm:'D','F#m':'A',Cm:'Eb',Gm:'Bb'};const vfKey=minorToMajor[key]||key;
+const toVFKey=name=>{if(!name||name==='rest')return'b/4';const m=String(name).match(/^([A-G])([#b]?)(\d)$/);if(!m)return'b/4';return`${m[1].toLowerCase()}${m[2]||''}/${m[3]}`};
+const toVFDur=dur=>({'1n':'w','2n':'h','4n':'q','8n':'8','16n':'16','8n.':'8d','4n.':'qd','2n.':'hd'})[dur]||'q';
+const isDotted=dur=>/\.$/.test(dur);
+const stemDir=name=>{const m=name&&String(name).match(/^([A-G])([#b]?)(\d)$/);if(!m)return VF.Stem.UP;const v={C:0,D:2,E:4,F:5,G:7,A:9,B:11};const midi=v[m[1]]+(parseInt(m[3])+1)*12+(m[2]==='#'?1:m[2]==='b'?-1:0);return midi>=71?VF.Stem.DOWN:VF.Stem.UP};
+const addDot=n=>{try{n.addModifier(new VF.Dot(),0)}catch(e){try{n.addDotToAll()}catch(e2){}}};
+const addAcc=(n,a)=>{try{n.addModifier(new VF.Accidental(a),0)}catch(e){try{n.addAccidental(0,new VF.Accidental(a))}catch(e2){}}};
+const measures=splitMeasures(notes,timeSig);const beatsNum=parseInt(String(timeSig).split('/')[0])||4;const beatVal=parseInt(String(timeSig).split('/')[1])||4;
+const BARS_PER_SYSTEM=4,totalSystems=Math.max(1,Math.ceil(measures.length/BARS_PER_SYSTEM));const W=960,SYSTEM_H=200,TOP_PAD=20,totalH=TOP_PAD+totalSystems*SYSTEM_H+20;
+const renderer=new VF.Renderer(container,VF.Renderer.Backends.SVG);renderer.resize(W,totalH);const ctx=renderer.getContext();
+for(let s=0;s<totalSystems;s++){
+const yTop=TOP_PAD+s*SYSTEM_H;const barStart=s*BARS_PER_SYSTEM,barEnd=Math.min(barStart+BARS_PER_SYSTEM,measures.length),barsThisSystem=barEnd-barStart;if(!barsThisSystem)continue;
+const extraW=s===0?100:60;const barW=Math.floor((W-30-extraW)/barsThisSystem);const trebleStaves=[],bassStaves=[];
+for(let b=0;b<barsThisSystem;b++){
+const staveX=b===0?20:20+extraW+b*barW;const staveW=b===0?extraW+barW:barW;const tStave=new VF.Stave(staveX,yTop+10,staveW);const bStave=new VF.Stave(staveX,yTop+105,staveW);
+if(b===0){tStave.addClef('treble');bStave.addClef('bass');if(s===0){try{tStave.addKeySignature(vfKey)}catch(e){}try{bStave.addKeySignature(vfKey)}catch(e){}try{tStave.addTimeSignature(timeSig)}catch(e){}try{bStave.addTimeSignature(timeSig)}catch(e){}}}
+tStave.setContext(ctx).draw();bStave.setContext(ctx).draw();trebleStaves.push(tStave);bassStaves.push(bStave);if(b===0){try{new VF.StaveConnector(tStave,bStave).setType(VF.StaveConnector.type.BRACE).setContext(ctx).draw()}catch(e){}try{new VF.StaveConnector(tStave,bStave).setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(ctx).draw()}catch(e){}}
+}
+try{new VF.StaveConnector(trebleStaves[trebleStaves.length-1],bassStaves[bassStaves.length-1]).setType(VF.StaveConnector.type.SINGLE_RIGHT).setContext(ctx).draw()}catch(e){}
+for(let b2=0;b2<barsThisSystem;b2++){
+const barNotes=measures[barStart+b2];if(!barNotes||!barNotes.length)continue;const tStave=trebleStaves[b2],bStave=bassStaves[b2];const trebleTicks=[],bassTicks=[];
+barNotes.forEach(n=>{const vd=toVFDur(n.duration),dot=isDotted(n.duration),baseVd=vd.replace(/d$/,'');if(n.isRest||n.name==='rest'){const tr=new VF.StaveNote({clef:'treble',keys:['b/4'],duration:baseVd+'r'});if(dot)addDot(tr);trebleTicks.push(tr);const br=new VF.StaveNote({clef:'bass',keys:['d/3'],duration:baseVd+'r'});if(dot)addDot(br);bassTicks.push(br)}else{const sn=new VF.StaveNote({clef:'treble',keys:[toVFKey(n.name)],duration:vd,stem_direction:stemDir(n.name)});if(dot)addDot(sn);const am=String(n.name).match(/^([A-G])([#b])/);if(am)addAcc(sn,am[2]);trebleTicks.push(sn);const bRest=new VF.StaveNote({clef:'bass',keys:['d/3'],duration:baseVd+'r'});if(dot)addDot(bRest);bassTicks.push(bRest)}});
+const tVoice=new VF.Voice({num_beats:beatsNum,beat_value:beatVal});const bVoice=new VF.Voice({num_beats:beatsNum,beat_value:beatVal});tVoice.setMode(VF.Voice.Mode.SOFT);bVoice.setMode(VF.Voice.Mode.SOFT);tVoice.addTickables(trebleTicks);bVoice.addTickables(bassTicks);const formatter=new VF.Formatter();formatter.joinVoices([tVoice,bVoice]);formatter.format([tVoice,bVoice],tStave.getWidth()-30);tVoice.draw(ctx,tStave);bVoice.draw(ctx,bStave);
+}
+}
+}
+function renderStaffWithSvgAdvanced(notes,key,timeSig){
+const container=document.getElementById('advStaff');const beatsPerBar=timeSig==='6/8'?3:(parseInt(String(timeSig).split('/')[0])||4);const measures=splitMeasures(notes,timeSig);const totalBars=Math.max(1,measures.length);const barsPerSystem=4,totalSystems=Math.max(1,Math.ceil(totalBars/barsPerSystem));const width=900,systemHeight=90,topMargin=40,bottomMargin=40,height=topMargin+totalSystems*systemHeight+bottomMargin,leftMargin=50,rightMargin=40,staffSpacing=10;
+const pitchToY=(name,staffCenterY)=>{const m=String(name).match(/^([A-G])([#b]?)(\d)$/);if(!m)return staffCenterY;const d={C:0,D:1,E:2,F:3,G:4,A:5,B:6};const absPos=parseInt(m[3])*7+(d[m[1]]||0);const b4=34;return staffCenterY-(absPos-b4)*(staffSpacing/2)};
+const headInfo=dur=>dur==='1n'?{r:5,filled:false,stem:false}:dur==='2n'?{r:5,filled:false,stem:true}:{r:4.5,filled:true,stem:true};
+let svg=[];svg.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" style="background:#fff;border-radius:12px">`);
+for(let system=0;system<totalSystems;system++){const systemTop=topMargin+system*systemHeight,staffCenterY=systemTop+staffSpacing*2,systemStartBar=system*barsPerSystem,barsInThisSystem=Math.min(barsPerSystem,totalBars-systemStartBar);for(let i=0;i<5;i++){const y=staffCenterY-staffSpacing*2+i*staffSpacing;svg.push(`<line x1="${leftMargin}" y1="${y}" x2="${width-rightMargin}" y2="${y}" stroke="#000" stroke-width="1"/>`)}const sw=width-leftMargin-rightMargin;for(let b=0;b<=barsInThisSystem;b++){const x=leftMargin+(sw*b)/barsInThisSystem;const first=systemStartBar===0&&b===0,last=systemStartBar+b===totalBars;svg.push(`<line x1="${x}" y1="${staffCenterY-staffSpacing*2}" x2="${x}" y2="${staffCenterY+staffSpacing*2}" stroke="#000" stroke-width="${first||last?1.5:.8}"/>`)}if(system===0){svg.push(`<text x="${leftMargin+5}" y="${staffCenterY+5}" font-family="serif" font-size="24" font-weight="bold" fill="#000">𝄞</text>`);svg.push(`<text x="${leftMargin+25}" y="${staffCenterY+5}" font-family="serif" font-size="14" fill="#000">${key}</text>`);svg.push(`<text x="${leftMargin+45}" y="${staffCenterY-8}" font-family="serif" font-size="16" font-weight="bold" fill="#000">${String(timeSig).split('/')[0]}</text>`);svg.push(`<text x="${leftMargin+45}" y="${staffCenterY+12}" font-family="serif" font-size="16" font-weight="bold" fill="#000">${String(timeSig).split('/')[1]}</text>`)} }
+const notePositions=[];
+measures.forEach((barNotes,barIndex)=>{const systemIndex=Math.floor(barIndex/barsPerSystem),barInSystem=barIndex%barsPerSystem,systemTop=topMargin+systemIndex*systemHeight,staffCenterY=systemTop+staffSpacing*2,sw=width-leftMargin-rightMargin,barsInThisSystem=Math.min(barsPerSystem,totalBars-systemIndex*barsPerSystem),barWidth=sw/barsInThisSystem,innerBarWidth=barWidth-staffSpacing*3,barTotalBeats=barNotes.reduce((s,n)=>s+(n.durationInBeats||1),0);let beatCursor=0;barNotes.forEach(n=>{const dur=n.durationInBeats||1;const xInBar=((beatCursor+dur*0.3)/Math.max(barTotalBeats,1))*innerBarWidth;const x=leftMargin+barInSystem*barWidth+staffSpacing*1.5+xInBar;beatCursor=Math.round((beatCursor+dur)*10000)/10000;if(n.isRest||n.name==='rest'){notePositions.push({x,y:staffCenterY,info:{r:4.5,filled:false,stem:false},duration:n.duration,isRest:true,barIndex});return}const y=pitchToY(n.name,staffCenterY);const info=headInfo(n.duration);const m=String(n.name).match(/^([A-G])([#b]*)(\d)$/);const dPos={C:0,D:1,E:2,F:3,G:4,A:5,B:6};const absPos=m?parseInt(m[3])*7+(dPos[m[1]]||0):34;notePositions.push({x,y,info,duration:n.duration,stemDown:absPos>=34,isRest:false,match:m,barIndex})})});
+notePositions.forEach((p,idx)=>{if(p.isRest)return;const{x,y,info,duration,stemDown,match}=p;if(info.filled)svg.push(`<ellipse cx="${x}" cy="${y}" rx="${info.r+.5}" ry="${info.r-.5}" fill="#000" transform="rotate(-20 ${x} ${y})"/>`);else svg.push(`<ellipse cx="${x}" cy="${y}" rx="${info.r+.5}" ry="${info.r-.5}" fill="none" stroke="#000" stroke-width="1.2" transform="rotate(-20 ${x} ${y})"/>`);if(info.stem){const h=staffSpacing*3.5,sx=stemDown?x-info.r:x+info.r,sy2=stemDown?y+h:y-h;svg.push(`<line x1="${sx}" y1="${y}" x2="${sx}" y2="${sy2}" stroke="#000" stroke-width="1.2"/>`);const next=notePositions[idx+1];const canBeam=(duration==='8n'||duration==='16n')&&next&&next.barIndex===p.barIndex&&(next.duration==='8n'||next.duration==='16n')&&!next.isRest;if(canBeam){const nsx=next.stemDown?next.x-next.info.r:next.x+next.info.r,nsy2=next.stemDown?next.y+h:next.y-h;svg.push(`<line x1="${sx}" y1="${sy2}" x2="${nsx}" y2="${nsy2}" stroke="#000" stroke-width="4" stroke-linecap="round"/>`)} }
+if(String(duration).includes('.'))svg.push(`<circle cx="${x+info.r+6}" cy="${y}" r="1.5" fill="#000"/>`);if(match&&match[2]){const accX=x-info.r-10;svg.push(`<text x="${accX}" y="${y+5}" font-family="serif" font-size="14" fill="#000" text-anchor="middle">${match[2]==='#'?'♯':'♭'}</text>`)} });
+svg.push('</svg>');container.innerHTML=svg.join('')
+}
+
+let originalData = null;
+function reloadArrangementData(){
+  if(originalData){
+    if(!confirm('确定要还原为修改前的原始旋律吗？此操作不可撤销！')){
+      return;
+    }
+  }
+  try{stopArrangement()}catch(e){}
+  if(!originalData){
+    const loaded = readData();
+    data = norm(loaded);
+    originalData = JSON.parse(JSON.stringify(data));
+  } else {
+    data = JSON.parse(JSON.stringify(originalData));
+  }
+  if(!data||!data.notes.length){status('未找到可用旋律数据：请先从首页生成旋律后再进入高级编辑。');return}saveTemp(data);updateMeta(data);renderLocalFallback();notice('旋律已重新载入。')}
+
+
+function switchAdvancedScore(tab){active=tab==='staff'?'staff':'jianpu';const j=active==='jianpu';const jEl=document.getElementById('advJianpu'),sEl=document.getElementById('advStaff');const tj=document.getElementById('tabJ'),ts=document.getElementById('tabS');if(jEl)jEl.style.display=j?'':'none';if(sEl)sEl.style.display=j?'none':'';if(tj)tj.classList.toggle('active',j);if(ts)ts.classList.toggle('active',!j)}
+function bindScoreTabs(){const tj=document.getElementById('tabJ'),ts=document.getElementById('tabS');if(tj&&!tj.dataset.bound){tj.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();switchAdvancedScore('jianpu')});tj.dataset.bound='1'}if(ts&&!ts.dataset.bound){ts.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();switchAdvancedScore('staff')});ts.dataset.bound='1'}}
+function updateMeta(d){const names={piano:'钢琴',strings:'弦乐',guzheng:'古筝',flute:'笛子',electricPiano:'电钢琴',synth:'合成器',guitar:'吉他'},ch=[...new Set(d.notes.map(n=>n.chord).filter(Boolean))],rh=[...new Set(d.notes.map(n=>n.duration).filter(Boolean))];mKey.textContent=d.key;mSig.textContent=d.timeSig;mBpm.textContent=d.bpm;mIns.textContent=names[d.instrument]||d.instrument;mBars.textContent=d.bars;mNotes.textContent=d.notes.length;lKey.textContent=`${d.key}${String(d.key).includes('m')?'小调':'大调'}旋律，沿用首页生成的音高材料`;lRhythm.textContent=`${d.timeSig}拍，速度${d.bpm} BPM，可按原节奏结构跟唱练习`;lChords.innerHTML=ch.length?ch.map(c=>`<span class="chip">${c}</span>`).join(''):'当前旋律暂未检测到和弦标注';if(window.lPattern)lPattern.textContent=`常用时值：${rh.join('、')||'暂无'}`;if(window.lPractice)lPractice.textContent=`建议先以 ${Math.floor(d.bpm*0.8)} BPM慢速跟唱，再回到原速${d.bpm} BPM`}
+
+function playArrangement(){
+ensureAudioCtx();
+if(!arrangement.chords.length||!arrangement.drums.length)autoArrange();playArrangementLayer();notice('已使用本地音频引擎播放当前旋律');
+startTeachingHighlight()
+}
+
+/**
+ * 统一播放/暂停按钮状态更新
+ * - 播放中：显示「暂停完整编曲」并高亮
+ * - 非播放：显示「预览完整编曲」并恢复默认
+ */
+function setPreviewButtonState(isPlaying){
+const btn=document.getElementById('previewArrangeBtn');
+const txt=document.getElementById('previewArrangeBtnText');
+if(!btn||!txt)return;
+if(isPlaying){txt.textContent='暂停完整编曲';btn.classList.add('primary');btn.classList.remove('play')}
+else{txt.textContent='预览完整编曲';btn.classList.add('play');btn.classList.remove('primary')}
+}
+
+/**
+ * 统一完整编曲播放/暂停切换逻辑
+ * 1) 首次点击：同时播放旋律+和弦+鼓点
+ * 2) 再次点击：暂停所有音频并保留当前播放进度
+ */
+function togglePreviewArrangement(){
+data=data||norm(readData());if(!data)return;
+if(!arrangement.chords.length||!arrangement.drums.length)autoArrange();
+if(!arrAudio.state){arrAudio.state={mode:'stopped',startTime:0,pauseOffsetSec:0,totalDurationSec:0,timer:null}};
+const barBeat=(data.timeSig==='6/8'?3:parseInt(data.timeSig)||4);
+const beatSec=60/Math.max(40,parseInt(data.bpm)||120);
+arrAudio.state.totalDurationSec=Math.max(0.2,data.bars*barBeat*beatSec);
+if(arrAudio.state.mode==='playing'){
+arrAudio.state.pauseOffsetSec=Math.max(0,Math.min(arrAudio.state.totalDurationSec,arrAudio.state.pauseOffsetSec+(performance.now()-arrAudio.state.startTime)/1000));
+arrAudio.state.mode='paused';
+stopTeachingHighlight();
+stopArrangeAudio();
+setPreviewButtonState(false);
+return;
+}
+if(arrAudio.state.mode==='stopped'){arrAudio.state.pauseOffsetSec=0}
+arrAudio.state.startTime=performance.now();
+arrAudio.state.mode='playing';
+playArrangementFromOffset(arrAudio.state.pauseOffsetSec);
+setPreviewButtonState(true);
+notice(arrAudio.state.pauseOffsetSec>0?'继续预览完整编曲':'正在预览完整编曲：已叠加和弦与鼓点伴奏')
+}
+
+function stopArrangement(){
+stopTeachingHighlight();
+stopArrangeAudio();
+if(!arrAudio.state){arrAudio.state={mode:'stopped',startTime:0,pauseOffsetSec:0,totalDurationSec:0,timer:null}}
+arrAudio.state.mode='stopped';
+arrAudio.state.pauseOffsetSec=0;
+if(arrAudio.state.timer){clearTimeout(arrAudio.state.timer);arrAudio.state.timer=null}
+setPreviewButtonState(false)
+}
+function exportJianpuPdf(){
+if(!data||!data.notes||!data.notes.length){notice('请先载入旋律数据');return}
+try{renderJianpuAdvanced(data.notes,data.key,data.timeSig)}catch(e){}
+switchAdvancedScore('jianpu');
+const container=document.getElementById('advJianpu');
+if(!container){notice('未找到简谱区域');return}
+const svg=container.querySelector('svg');
+if(!svg){notice('请先生成/载入简谱后再导出');return}
+notice('正在生成简谱PDF...');
+setTimeout(async()=>{
+try{
+const serializer=new XMLSerializer();
+const svgStr=serializer.serializeToString(svg);
+const vb=svg.viewBox&&svg.viewBox.baseVal;
+const svgW=Math.ceil(vb?vb.width:(svg.width?.baseVal?.value||900));
+const svgH=Math.ceil(vb?vb.height:(svg.height?.baseVal?.value||300));
+const scale=2;
+const canvas=document.createElement('canvas');
+canvas.width=svgW*scale;canvas.height=svgH*scale;
+const ctx=canvas.getContext('2d');
+ctx.fillStyle='#ffffff';ctx.fillRect(0,0,canvas.width,canvas.height);
+ctx.setTransform(scale,0,0,scale,0,0);
+if(window.canvg&&window.canvg.Canvg){const v=await window.canvg.Canvg.fromString(ctx,svgStr,{ignoreMouse:true,ignoreAnimation:true});await v.render();}
+else{const img=new Image();const url='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svgStr);await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src=url});ctx.drawImage(img,0,0,svgW,svgH)}
+const imgData=canvas.toDataURL('image/png');
+const {jsPDF}=window.jspdf;const pdf=new jsPDF('p','mm','a4');
+const pw=pdf.internal.pageSize.getWidth(),ph=pdf.internal.pageSize.getHeight();
+const margin=10;let fw=pw-margin*2;let fh=canvas.height*fw/canvas.width;
+if(fh>ph-margin*2){fh=ph-margin*2;fw=canvas.width*fh/canvas.height}
+pdf.addImage(imgData,'PNG',(pw-fw)/2,(ph-fh)/2,fw,fh,undefined,'FAST');
+pdf.save(`灵动音符_简谱_${Date.now()}.pdf`);
+notice('简谱PDF导出成功');
+}catch(e){console.error('简谱PDF导出失败:',e);notice('简谱PDF导出失败: '+e.message)}
+},250);
+}
+function exportStaffPdf(){
+if(!data||!data.notes||!data.notes.length){notice('请先载入旋律数据');return}
+try{renderStaffAdvanced(data.notes,data.key,data.timeSig)}catch(e){}
+switchAdvancedScore('staff');
+const container=document.getElementById('advStaff');
+if(!container){notice('未找到五线谱区域');return}
+notice('正在生成五线谱PDF...');
+const originalClassName=container.className;
+container.classList.add('exporting');
+setTimeout(()=>{exportVexflowSvgToPdf(container).then(()=>{notice('五线谱PDF导出成功')}).catch(err=>{console.error('五线谱PDF导出失败:',err);notice('五线谱PDF导出失败: '+(err.message||err))}).finally(()=>{container.className=originalClassName});},350);
+}
+function renderPresets(){presetGrid.innerHTML='';PRESETS.forEach((p,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='preset';btn.dataset.presetIndex=String(i);btn.innerHTML=`<b>${p[0]}</b><br><span class="muted">${p[1]} · ${p[2]} · ${p[3]}BPM</span>`;presetGrid.appendChild(btn)});bindPresetEvents()}
+function bindPresetEvents(){if(presetGrid.dataset.bound==='1')return;presetGrid.addEventListener('click',e=>{const btn=e.target.closest('.preset');if(!btn||!presetGrid.contains(btn))return;const i=parseInt(btn.dataset.presetIndex,10);if(Number.isNaN(i))return;applyPreset(i)});presetGrid.dataset.bound='1'}
+function persistAndReload(msg='旋律已更新'){if(!data)return;localStorage.setItem(KEY,JSON.stringify({notes:data.notes,key:data.key,timeSignature:data.timeSig,bpm:data.bpm,speed:data.bpm,instrument:data.instrument,bars:data.bars,style:data.style,savedAt:new Date().toISOString()}));saveTemp(data);updateMeta(data);renderLocalFallback();notice(msg)}
+function applyPreset(i){const p=PRESETS[i];data=data||norm(readData());if(!data)return;data.key=p[1];data.timeSig=p[2];data.bpm=p[3];data.instrument=p[4];data.style=p[0];data.bars=Math.max(1,parseInt(data.bars||8));const progression=makeProgression(data.key,data.bars);const beatsPerBar=data.timeSig==='6/8'?3:(parseInt(data.timeSig)||4);data.notes=data.notes.map((n,idx)=>{const barIndex=Math.min(progression.length-1,Math.floor((n.beat||0)/beatsPerBar));return {...n,chord:progression[barIndex]||progression[idx%progression.length]||n.chord,strongBeat:((n.beat||0)%beatsPerBar)===0}});document.querySelectorAll('#presetGrid .preset').forEach((x,n)=>x.classList.toggle('active',n===i));persistAndReload(`已套用「${p[0]}」风格预设：${data.key} · ${data.timeSig} · ${data.bpm} BPM · ${data.instrument}`)}
+function applyTextIdea(){
+data=data||norm(readData());if(!data)return;
+const txt=(ideaText.value||'').trim();
+const keys=['轻快','温暖','治愈','校园','国风','电子','古典','华尔兹','爵士','民谣','史诗','梦幻','摇滚'];
+const tags=keys.filter(k=>txt.includes(k));
+ideaTags.innerHTML=tags.map(t=>`<span class="chip">${t}</span>`).join('')||'<span class="chip">自由灵感</span>';
+
+const key=data.key||'C';
+const timeSig=data.timeSig||'4/4';
+const bars=Math.max(1,parseInt(data.bars||8));
+let notes=[];
+
+const pool={C:['C4','D4','E4','G4','A4'],D:['D4','E4','F#4','A4','B4'],E:['E4','F#4','G#4','B4','C#5'],F:['F4','G4','A4','C5','D5'],G:['G4','A4','B4','D5','E5'],A:['A4','B4','C#5','E5','F#5'],Bb:['Bb3','C4','D4','F4','G4'],Eb:['Eb4','F4','G4','Bb4','C5'],Am:['A4','B4','C5','E5','G5'],Em:['E4','F#4','G4','B4','D5'],Dm:['D4','E4','F4','A4','C5']};
+const p=pool[key]||pool[String(key).replace('m','')]||pool.C;const beatsPerBar=timeSig==='6/8'?3:(parseInt(timeSig)||4);let beat=0;
+notes=Array.from({length:Math.max(8,bars*beatsPerBar)},(_,i)=>{const duration=i%5===0?'2n':(i%3===0?'8n':'4n');const n={name:p[i%p.length],duration,durationInBeats:durBeat(duration),beat,chord:'',strongBeat:(beat%beatsPerBar)===0};beat+=n.durationInBeats;return n});
+
+data.notes=(notes||[]).map(n=>({...n,durationInBeats:durBeat(n.duration||'4n')}));
+rebuildBeats();
+data.bars=Math.max(1,Math.ceil(((data.notes[data.notes.length-1]?.beat||0)+durBeat(data.notes[data.notes.length-1]?.duration||'4n'))/(data.timeSig==='6/8'?3:(parseInt(data.timeSig)||4))));
+persistAndReload('已生成新旋律');
+}
+function humanizeMelody(tags){if(!data||!data.notes)return;const soft=tags.includes('治愈')||tags.includes('温暖'),up=tags.includes('轻快')||tags.includes('校园');data.notes=data.notes.map((n,i)=>{const x={...n};if(up&&i%5===0)x.name=transpose(x.name,1);if(soft&&i%4===0)x.duration='4n';x.durationInBeats=durBeat(x.duration);return x});rebuildBeats()}
+async function toggleHumming(){
+if(recording){mediaRecorder&&mediaRecorder.stop();recording=false;recordBtn.innerHTML='<i class="fas fa-microphone"></i>哼唱识别';return}
+try{
+const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+recordChunks=[];
+mediaRecorder=new MediaRecorder(stream);
+mediaRecorder.ondataavailable=e=>recordChunks.push(e.data);
+mediaRecorder.onstop=async()=>{stream.getTracks().forEach(t=>t.stop());await importHummingMelody(recordChunks)};
+mediaRecorder.start();
+recording=true;
+recordBtn.innerHTML='<i class="fas fa-stop"></i>录音中(5s)';
+setTimeout(()=>{if(recording&&mediaRecorder&&mediaRecorder.state==='recording'){mediaRecorder.stop();recording=false;recordBtn.innerHTML='<i class="fas fa-microphone"></i>哼唱识别'}},5000);
+}catch(e){notice('浏览器未授权麦克风，已使用示例哼唱旋律导入');importHummingMelody([])}
+}
+async function importHummingMelody(chunks){
+data=data||norm(readData());if(!data)return;
+const detected=await detectPitchesFromAudioChunks(chunks);
+const seq=detected.length?detected:['C4','D4','E4','G4','A4','G4','E4','D4'];
+const beatsPerBar=data.timeSig==='6/8'?3:(parseInt(data.timeSig)||4);
+const total=Math.max(8,Math.min(32,data.bars*beatsPerBar));
+let beat=0;
+const prog=makeProgression(data.key,data.bars);
+data.notes=Array.from({length:total},(_,i)=>{const duration='4n';const n={name:seq[i%seq.length],duration,durationInBeats:1,beat,chord:prog[Math.floor(beat/beatsPerBar)]||'',strongBeat:(beat%beatsPerBar)===0,isChordTone:true};beat+=1;return n});
+data.bars=Math.max(1,Math.ceil(beat/beatsPerBar));
+persistAndReload(detected.length?'5秒哼唱识别完成，已替换当前旋律':'未识别到稳定音高，已导入简化示例旋律');
+}
+async function detectPitchesFromAudioChunks(chunks){if(!chunks||!chunks.length)return[];try{const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return[];const ctx=new Ctx();const blob=new Blob(chunks,{type:chunks[0].type||'audio/webm'});const arrBuf=await blob.arrayBuffer();const audioBuf=await ctx.decodeAudioData(arrBuf.slice(0));const src=audioBuf.getChannelData(0);const sampleRate=audioBuf.sampleRate;const frame=Math.floor(sampleRate*0.08);const hop=Math.floor(sampleRate*0.12);const out=[];for(let start=0;start+frame<src.length;start+=hop){const seg=src.subarray(start,start+frame);const f=estimatePitchHz(seg,sampleRate);if(f>70&&f<1200){const note=hzToNote(f);if(!out.length||out[out.length-1]!==note)out.push(note)}if(out.length>=24)break}ctx.close();return out}catch(e){console.warn('pitch detect failed',e);return[]}}
+function estimatePitchHz(buf,sr){let bestLag=0,best=0;const minLag=Math.floor(sr/1200),maxLag=Math.floor(sr/70);for(let lag=minLag;lag<=maxLag;lag++){let sum=0;for(let i=0;i<buf.length-lag;i++)sum+=buf[i]*buf[i+lag];if(sum>best){best=sum;bestLag=lag}}return bestLag?sr/bestLag:0}
+function hzToNote(hz){const n=Math.round(12*Math.log2(hz/440)+69);const names=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];const name=names[((n%12)+12)%12];const oct=Math.floor(n/12)-1;return name+Math.max(3,Math.min(5,oct))}
+function makeProgression(key,bars){const root=String(key).replace('m','');const map={C:['C','G','Am','F'],G:['G','D','Em','C'],D:['D','A','Bm','G'],F:['F','C','Dm','Bb'],A:['A','E','F#m','D'],Bb:['Bb','F','Gm','Eb'],Eb:['Eb','Bb','Cm','Ab'],Am:['Am','F','C','G'],Em:['Em','C','G','D'],Dm:['Dm','Bb','F','C']};const arr=map[key]||map[root]||map.C;return Array.from({length:bars},(_,i)=>arr[i%arr.length])}
+function autoArrange(){data=data||norm(readData());if(!data)return;arrangement.chords=makeProgression(data.key,data.bars);arrangement.drums=Array.from({length:data.bars},()=>data.timeSig==='3/4'?['Kick','Hat','Snare']:data.timeSig==='2/4'?['Kick','Snare']:['Kick','Hat','Snare','Hat']);data.notes=data.notes.map(n=>({...n,chord:arrangement.chords[Math.min(arrangement.chords.length-1,Math.floor((n.beat||0)/(data.timeSig==='6/8'?3:parseInt(data.timeSig)||4)))]||n.chord}));arrangeInfo.textContent=`已生成和弦进行：${arrangement.chords.join(' - ')}；鼓点：${data.timeSig} 基础律动。`;persistAndReload('自动完整编曲已生成')}
+function updateVols(){arrangement.vol={melody:+melVol.value,chord:+chordVol.value,drum:+drumVol.value};melVolTxt.textContent=melVol.value;chordVolTxt.textContent=chordVol.value;drumVolTxt.textContent=drumVol.value}
+function stopArrangeAudio(){if(!arrAudio.ctx)return;arrAudio.nodes.forEach(n=>{try{if(n&&typeof n.stop==='function')n.stop()}catch(e){}});arrAudio.nodes=[];arrAudio.playing=false}
+function ensureAudioCtx(){const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return null;if(!arrAudio.ctx)arrAudio.ctx=new Ctx();if(arrAudio.ctx.state==='suspended')arrAudio.ctx.resume();if(!arrAudio.fx){const master=arrAudio.ctx.createGain();master.gain.value=0.92;const comp=arrAudio.ctx.createDynamicsCompressor();comp.threshold.value=-26;comp.knee.value=18;comp.ratio.value=2.6;comp.attack.value=0.006;comp.release.value=0.22;const convolver=arrAudio.ctx.createConvolver();const ir=arrAudio.ctx.createBuffer(2,Math.floor(arrAudio.ctx.sampleRate*1.15),arrAudio.ctx.sampleRate);for(let c=0;c<2;c++){const ch=ir.getChannelData(c);for(let i=0;i<ch.length;i++){const t=i/ch.length;ch[i]=(Math.random()*2-1)*Math.pow(1-t,2.2)*(c===0?0.7:0.62)}}convolver.buffer=ir;const wet=arrAudio.ctx.createGain();wet.gain.value=0.16;const dry=arrAudio.ctx.createGain();dry.gain.value=0.84;master.connect(dry);master.connect(convolver);convolver.connect(wet);dry.connect(comp);wet.connect(comp);comp.connect(arrAudio.ctx.destination);arrAudio.fx={master,comp,convolver,wet,dry}}return arrAudio.ctx}
+async function exportAudioWavFallback(){
+const sampleRate=44100;const off=new OfflineAudioContext(1,sampleRate*1,sampleRate);
+const secPerBeat=60/Math.max(40,parseInt(data?.bpm)||120);
+const totalBeats=(data?.notes||[]).reduce((s,n)=>s+durBeat(n.duration),0)||4;
+const length=Math.ceil((totalBeats*secPerBeat+0.6)*sampleRate);
+const ctx=new OfflineAudioContext(1,length,sampleRate);
+const g=ctx.createGain();g.gain.value=0.7;g.connect(ctx.destination);
+let beat=0;
+(data?.notes||[]).forEach(n=>{const osc=ctx.createOscillator();const og=ctx.createGain();osc.type='triangle';osc.frequency.value=freqFromNote(n.name);const st=beat*secPerBeat,du=Math.max(0.06,durBeat(n.duration)*secPerBeat*0.95);og.gain.setValueAtTime(0.0001,st);og.gain.linearRampToValueAtTime(0.18,st+0.01);og.gain.exponentialRampToValueAtTime(0.0001,st+du);osc.connect(og).connect(g);osc.start(st);osc.stop(st+du);beat+=durBeat(n.duration)});
+const buf=await ctx.startRendering();
+const wav=audioBufferToWav(buf);
+const blob=new Blob([wav],{type:'audio/wav'});
+const url=URL.createObjectURL(blob);
+const a=document.createElement('a');a.href=url;a.download=`advanced-edit-${Date.now()}.wav`;document.body.appendChild(a);a.click();a.remove();
+setTimeout(()=>URL.revokeObjectURL(url),1500);
+notice('已导出 WAV 音频文件')
+}
+function exportArrangementMidi(){
+if(!data||!data.notes||!data.notes.length){notice('请先载入旋律数据');return}
+if(!arrangement.chords.length||!arrangement.drums.length)autoArrange();
+const tempo=parseInt(data.bpm)||120;
+const beatsPerBar=data.timeSig==='6/8'?3:(parseInt(data.timeSig)||4);
+const melodyNotes=[...(data.notes||[])];
+const chordBars=[...(arrangement.chords&&arrangement.chords.length?arrangement.chords:makeProgression(data.key,data.bars||1))];
+const drumBars=[...(arrangement.drums&&arrangement.drums.length?arrangement.drums:Array.from({length:Math.max(1,data.bars||1)},()=>data.timeSig==='3/4'?['Kick','Hat','Snare']:data.timeSig==='2/4'?['Kick','Snare']:['Kick','Hat','Snare','Hat']))];
+const programMap={'piano':0,'electricPiano':4,'strings':48,'flute':73,'guzheng':107,'synth':88,'guitar':24};
+const program=programMap[data.instrument]??0;
+function noteNameToMidi(name){const m=String(name||'').match(/^([A-G])([#b]?)(\d)$/);if(!m)return 60;const base={C:0,D:2,E:4,F:5,G:7,A:9,B:11}[m[1]];const acc=m[2]==='#'?1:m[2]==='b'?-1:0;return base+acc+(parseInt(m[3])+1)*12}
+function chordNameToMidiList(ch){const base=String(ch||'C');const isMinor=/m$/.test(base)&&!/maj/i.test(base);const root=base.replace(/m$/,'');const roots={C:60,'C#':61,Db:61,D:62,'D#':63,Eb:63,E:64,F:65,'F#':66,Gb:66,G:67,'G#':68,Ab:68,A:69,'A#':70,Bb:70,B:71};const r=roots[root]||60;return [r,isMinor?r+3:r+4,r+7]}
+const TICKS_PER_BEAT=480;
+function beatToTicks(v){return Math.round(v*TICKS_PER_BEAT)}
+function durationToBeats(dur){return {'1n':4,'2n.':3,'2n':2,'4n.':1.5,'4n':1,'8n.':0.75,'8n':0.5,'16n':0.25}[dur]||1}
+function writeUint32(val){return[(val>>24)&255,(val>>16)&255,(val>>8)&255,val&255]}
+function writeUint16(val){return[(val>>8)&255,val&255]}
+function writeVarLen(val){if(val<128)return[val];const bytes=[];let v=val;while(v>0){bytes.unshift(v&127);v>>=7}for(let i=0;i<bytes.length-1;i++)bytes[i]|=128;return bytes}
+
+const timed=[];
+const usPerBeat=Math.round(60000000/Math.max(40,tempo));
+timed.push({tick:0,msg:[255,81,3,(usPerBeat>>16)&255,(usPerBeat>>8)&255,usPerBeat&255]});
+timed.push({tick:0,msg:[192,program]});
+
+melodyNotes.forEach(note=>{
+if(!note||!note.name)return;
+const startBeat=(typeof note.beat==='number'?note.beat:0);
+const durBeatVal=durationToBeats(note.duration);
+const startTick=beatToTicks(startBeat);
+const endTick=beatToTicks(startBeat+durBeatVal);
+const pitch=noteNameToMidi(note.name);
+const velocity=note.strongBeat?94:76;
+timed.push({tick:startTick,msg:[144,pitch,velocity]});
+timed.push({tick:Math.max(startTick+1,endTick),msg:[128,pitch,0]});
+});
+
+chordBars.forEach((ch,bar)=>{
+const startTick=beatToTicks(bar*beatsPerBar);
+const endTick=beatToTicks((bar+1)*beatsPerBar*0.96);
+chordNameToMidiList(ch).forEach(pitch=>{
+timed.push({tick:startTick,msg:[145,pitch,62]});
+timed.push({tick:Math.max(startTick+1,endTick),msg:[129,pitch,0]});
+});
+});
+
+drumBars.forEach((pat,bar)=>{
+pat.forEach((hit,idx)=>{
+const beatPos=bar*beatsPerBar+idx*(beatsPerBar/pat.length);
+const startTick=beatToTicks(beatPos);
+const pitch=hit==='Kick'?36:hit==='Snare'?38:42;
+const velocity=hit==='Kick'?102:hit==='Snare'?98:72;
+const len=hit==='Hat'?0.12:0.18;
+const endTick=startTick+Math.max(1,beatToTicks(len));
+timed.push({tick:startTick,msg:[153,pitch,velocity]});
+timed.push({tick:endTick,msg:[137,pitch,0]});
+});
+});
+
+timed.sort((a,b)=>a.tick-b.tick);
+let lastTick=0;
+const events=[];
+timed.forEach(ev=>{const delta=Math.max(0,ev.tick-lastTick);events.push([...writeVarLen(delta),...ev.msg]);lastTick=ev.tick});
+events.push([...writeVarLen(0),255,47,0]);
+
+const trackData=events.flat();const trackChunk=[77,84,114,107,...writeUint32(trackData.length),...trackData];
+const header=[77,84,104,100,0,0,0,6,0,0,0,1,...writeUint16(TICKS_PER_BEAT)];
+const midiBytes=new Uint8Array([...header,...trackChunk]);const blob=new Blob([midiBytes],{type:'audio/midi'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;const key=data.key||'C';a.download=`灵动音符_完整编曲_${key}_${tempo}BPM_${Date.now()}.mid`;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);notice('完整编曲 MIDI 导出成功')
+}
+function audioBufferToWav(buffer){const ch=buffer.numberOfChannels,sr=buffer.sampleRate,bytes=2,block=ch*bytes,dataLen=buffer.length*block;const ab=new ArrayBuffer(44+dataLen);const v=new DataView(ab);let o=0;const ws=s=>{for(let i=0;i<s.length;i++)v.setUint8(o++,s.charCodeAt(i))};ws('RIFF');v.setUint32(o,36+dataLen,true);o+=4;ws('WAVE');ws('fmt ');v.setUint32(o,16,true);o+=4;v.setUint16(o,1,true);o+=2;v.setUint16(o,ch,true);o+=2;v.setUint32(o,sr,true);o+=4;v.setUint32(o,sr*block,true);o+=4;v.setUint16(o,block,true);o+=2;v.setUint16(o,16,true);o+=2;ws('data');v.setUint32(o,dataLen,true);o+=4;const channels=Array.from({length:ch},(_,i)=>buffer.getChannelData(i));for(let i=0;i<buffer.length;i++){for(let c=0;c<ch;c++){const s=Math.max(-1,Math.min(1,channels[c][i]||0));v.setInt16(o,s<0?s*0x8000:s*0x7fff,true);o+=2}}return ab}
+function freqFromNote(note){const m=String(note||'').match(/^([A-G])([#b]?)(\d)$/);if(!m)return 440;const semis={C:0,D:2,E:4,F:5,G:7,A:9,B:11}[m[1]]+(m[2]==='#'?1:m[2]==='b'?-1:0);const midiNum=(+m[3]+1)*12+semis;return 440*Math.pow(2,(midiNum-69)/12)}
+function chordNotes(ch){const base=String(ch||'C');const isMinor=/m$/.test(base)&&!/maj/i.test(base);const root=base.replace(/m$/,'');const roots={C:60,'C#':61,Db:61,D:62,'D#':63,Eb:63,E:64,F:65,'F#':66,Gb:66,G:67,'G#':68,Ab:68,A:69,'A#':70,Bb:70,B:71};const r=roots[root]||60;const third=isMinor?r+3:r+4;const fifth=r+7;return [r,third,fifth].map(m=>440*Math.pow(2,(m-69)/12))}
+function playTone(ctx,freq,start,dur,vol,type='sine',layer='melody'){const osc=ctx.createOscillator();const gain=ctx.createGain();const filter=ctx.createBiquadFilter();const pan=ctx.createStereoPanner?ctx.createStereoPanner():null;osc.type=type;osc.frequency.setValueAtTime(freq,start);if(layer==='melody'){filter.type='lowpass';filter.frequency.setValueAtTime(5200,start);filter.Q.value=0.8;if(pan)pan.pan.value=0}else if(layer==='chord'){filter.type='lowpass';filter.frequency.setValueAtTime(2800,start);filter.Q.value=1.2;if(pan)pan.pan.value=-0.08}else{filter.type='bandpass';filter.frequency.setValueAtTime(type==='square'?6500:160,start);filter.Q.value=type==='square'?0.55:1.6;if(pan)pan.pan.value=type==='square'?0.12:0.02}const a=layer==='melody'?0.012:(layer==='chord'?0.028:0.003),r=layer==='melody'?0.08:(layer==='chord'?0.14:0.03);gain.gain.setValueAtTime(0.0001,start);gain.gain.linearRampToValueAtTime(Math.max(0.0001,vol),start+a);gain.gain.exponentialRampToValueAtTime(0.0001,start+Math.max(0.05,dur-r));if(pan){osc.connect(filter).connect(gain).connect(pan).connect(arrAudio.fx?.master||ctx.destination)}else{osc.connect(filter).connect(gain).connect(arrAudio.fx?.master||ctx.destination)}osc.start(start);osc.stop(start+dur);arrAudio.nodes.push(osc,filter,gain);if(pan)arrAudio.nodes.push(pan)}
+function playArrangementLayer(offsetSec=0){const ctx=ensureAudioCtx();if(!ctx||!data||!data.notes.length)return;stopArrangeAudio();const beatSec=60/Math.max(40,parseInt(data.bpm)||120);const now=ctx.currentTime+0.05;const melVol=(arrangement.vol.melody/100)*0.18,chVol=(arrangement.vol.chord/100)*0.12,drVol=(arrangement.vol.drum/100)*0.14;data.notes.forEach(n=>{const stAbs=(n.beat||0)*beatSec;const du=Math.max(0.08,durBeat(n.duration)*beatSec*0.95);const endAbs=stAbs+du;if(endAbs<=offsetSec)return;const st=now+Math.max(0,stAbs-offsetSec);const remain=Math.max(0.02,endAbs-Math.max(stAbs,offsetSec));playTone(ctx,freqFromNote(n.name),st,remain,melVol,'triangle','melody')});arrangement.chords.forEach((c,bar)=>{const barBeat=(data.timeSig==='6/8'?3:parseInt(data.timeSig)||4);const stAbs=bar*barBeat*beatSec;const du=barBeat*beatSec*0.95;const endAbs=stAbs+du;if(endAbs<=offsetSec)return;const st=now+Math.max(0,stAbs-offsetSec);const remain=Math.max(0.05,endAbs-Math.max(stAbs,offsetSec));chordNotes(c).forEach(f=>playTone(ctx,f,st,remain,chVol,'sine','chord'))});arrangement.drums.forEach((pat,bar)=>{const barBeat=(data.timeSig==='6/8'?3:parseInt(data.timeSig)||4);pat.forEach((hit,idx)=>{const stAbs=(bar*barBeat+idx*(barBeat/pat.length))*beatSec;const dur=hit==='Hat'?0.045:0.095;if(stAbs+dur<=offsetSec)return;const st=now+Math.max(0,stAbs-offsetSec);const freq=hit==='Kick'?92:hit==='Snare'?200:6500;playTone(ctx,freq,st,dur,drVol,hit==='Hat'?'square':(hit==='Snare'?'triangle':'sine'),'drum')})});arrAudio.playing=true}
+
+function playArrangementFromOffset(offsetSec=0){
+const ctx=ensureAudioCtx();if(!ctx||!data||!data.notes.length)return;
+stopTeachingHighlight();
+if(offsetSec<=0){playArrangement();}
+else{
+const beatSec=60/Math.max(40,parseInt(data.bpm)||120);
+const remainMs=Math.max(10,offsetSec*1000);
+teachTimers.push(setTimeout(()=>startTeachingHighlight(),remainMs));
+}
+playArrangementLayer(offsetSec);
+if(arrAudio.state&&arrAudio.state.timer){clearTimeout(arrAudio.state.timer)}
+const remainSec=Math.max(0,(arrAudio.state?.totalDurationSec||0)-offsetSec);
+if(arrAudio.state){arrAudio.state.timer=setTimeout(()=>{arrAudio.state.mode='stopped';arrAudio.state.pauseOffsetSec=0;arrAudio.state.timer=null;setPreviewButtonState(false);stopTeachingHighlight();arrAudio.playing=false;arrAudio.nodes=[]},Math.ceil((remainSec+0.1)*1000))}
+}
+function startTeachingHighlight(){if(!data||!data.notes||!data.notes.length)return;stopTeachingHighlight();const beatSec=60/Math.max(40,parseInt(data.bpm)||120);data.notes.forEach((n,i)=>{const t=setTimeout(()=>highlightTeachingNote(i),Math.max(0,(n.beat||0)*beatSec*1000));teachTimers.push(t)});teachTimers.push(setTimeout(clearTeachingHighlight,Math.ceil(((data.notes[data.notes.length-1].beat||0)+durBeat(data.notes[data.notes.length-1].duration)+0.2)*beatSec*1000)))}
+function highlightTeachingNote(i){const cards=advMelody.querySelectorAll('.note-card');cards.forEach((c,idx)=>{c.style.boxShadow=idx===i?'0 0 0 2px #4facfe inset, 0 0 18px rgba(79,172,254,.65)':'';c.style.transform=idx===i?'translateY(-2px)':'translateY(0)'})}
+function clearTeachingHighlight(){const cards=advMelody.querySelectorAll('.note-card');cards.forEach(c=>{c.style.boxShadow='';c.style.transform=''});teachTimers=[]}
+function stopTeachingHighlight(){teachTimers.forEach(t=>clearTimeout(t));clearTeachingHighlight()}
+function getSelRange(){const a=Math.max(0,Math.min(selection.start,selection.end));const b=Math.max(a,Math.min((data?.notes?.length||1)-1,Math.max(selection.start,selection.end)));return [a,b]}
+function bindMelodyEditEvents(){if(advMelody.dataset.bound==='1')return;advMelody.addEventListener('click',e=>{const card=e.target.closest('.note-card');if(!card)return;const i=+card.dataset.noteIndex;selectedNoteIndex=i;if(e.shiftKey){selection.end=i}else{selection.start=i;selection.end=i}renderLocalFallback()});advMelody.addEventListener('dblclick',e=>{const card=e.target.closest('.note-card');if(!card)return;selectedNoteIndex=+card.dataset.noteIndex;changeSelectedDuration()});advMelody.addEventListener('dragstart',e=>{const card=e.target.closest('.note-card');if(!card)return;selection.dragFrom=+card.dataset.noteIndex;e.dataTransfer.effectAllowed='move'});advMelody.addEventListener('dragover',e=>{e.preventDefault()});advMelody.addEventListener('drop',e=>{e.preventDefault();const card=e.target.closest('.note-card');if(!card||selection.dragFrom===null||!data||!data.notes.length)return;const to=+card.dataset.noteIndex,from=selection.dragFrom;if(to===from)return;const moved=data.notes.splice(from,1)[0];data.notes.splice(to,0,moved);selection.start=to;selection.end=to;selection.dragFrom=null;rebuildBeats();persistAndReload('已拖动调整音符位置')});advMelody.addEventListener('mousedown',e=>{if(e.button!==0||e.target.closest('.note-card'))return;selection.box=true;const r=advMelody.getBoundingClientRect();selection.boxStart={x:e.clientX-r.left,y:e.clientY-r.top};const box=document.getElementById('melodySelectBox');if(box){box.style.display='block';box.style.left=`${selection.boxStart.x}px`;box.style.top=`${selection.boxStart.y}px`;box.style.width='0px';box.style.height='0px'}});advMelody.addEventListener('mousemove',e=>{if(!selection.box)return;const r=advMelody.getBoundingClientRect();const x=e.clientX-r.left,y=e.clientY-r.top,sx=selection.boxStart.x,sy=selection.boxStart.y;const l=Math.min(sx,x),t=Math.min(sy,y),w=Math.abs(x-sx),h=Math.abs(y-sy);const box=document.getElementById('melodySelectBox');if(box){box.style.left=`${l}px`;box.style.top=`${t}px`;box.style.width=`${w}px`;box.style.height=`${h}px`}});window.addEventListener('mouseup',()=>{if(!selection.box)return;selection.box=false;const box=document.getElementById('melodySelectBox');if(box)box.style.display='none';const cards=[...advMelody.querySelectorAll('.note-card')];const rect=box?.getBoundingClientRect();if(!rect||!cards.length)return;const picked=cards.map(c=>({i:+c.dataset.noteIndex,r:c.getBoundingClientRect()})).filter(x=>!(x.r.right<rect.left||x.r.left>rect.right||x.r.bottom<rect.top||x.r.top>rect.bottom)).map(x=>x.i);if(picked.length){selection.start=Math.min(...picked);selection.end=Math.max(...picked);renderLocalFallback();notice(`已框选 ${picked.length} 个音符`)}});advMelody.dataset.bound='1'}
+function editSelectedNote(step){data=data||norm(readData());if(!data||!data.notes.length)return;const [a,b]=getSelRange();for(let i=a;i<=b;i++)data.notes[i].name=transpose(data.notes[i].name,step);selectedNoteIndex=b;persistAndReload(step>0?'已升高选中音符':'已降低选中音符')}
+function changeSelectedDuration(){data=data||norm(readData());if(!data||!data.notes.length)return;const ds=['8n','4n','2n'];const i=selectedNoteIndex%data.notes.length;const n=data.notes[i];n.duration=ds[(ds.indexOf(n.duration)+1+ds.length)%ds.length]||'4n';n.durationInBeats=durBeat(n.duration);rebuildBeats();selection.start=i;selection.end=i;persistAndReload('已调整音符时值')}
+function copySegment(){data=data||norm(readData());if(!data||!data.notes.length)return;const [a,b]=getSelRange();const seg=data.notes.slice(a,b+1).map(n=>({...n}));data.notes.splice(b+1,0,...seg);selection.start=b+1;selection.end=b+seg.length;rebuildBeats();persistAndReload('已复制选中旋律片段')}
+function deleteSegment(){data=data||norm(readData());if(!data||!data.notes.length)return;const [a,b]=getSelRange();if(data.notes.length-(b-a+1)<1){notice('至少保留 1 个音符');return}data.notes.splice(a,b-a+1);selection.start=Math.max(0,a-1);selection.end=selection.start;rebuildBeats();persistAndReload('已删除选中旋律片段')}
+function validateTheory(){data=data||norm(readData());if(!data)return;let warn=0;for(let i=1;i<data.notes.length;i++){if(Math.abs(midi(data.notes[i].name)-midi(data.notes[i-1].name))>9)warn++}notice(warn?`发现 ${warn} 个较大跳进，建议使用级进连接。`:'乐理校验通过：旋律跳进整体平稳。')}
+function transpose(name,step){const ns=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'],m=String(name).match(/^([A-G])([#b]?)(\d)$/);if(!m)return name;let i=ns.indexOf(m[1]+(m[2]||''));if(i<0)i=ns.indexOf(m[1]);let o=+m[3],v=i+step;while(v<0){v+=12;o--}while(v>=12){v-=12;o++}return ns[v]+Math.max(3,Math.min(5,o))}function midi(n){const m=String(n).match(/^([A-G])([#b]?)(\d)$/);if(!m)return 60;return {C:0,D:2,E:4,F:5,G:7,A:9,B:11}[m[1]]+(m[2]==='#'?1:m[2]==='b'?-1:0)+(+m[3]+1)*12}function durBeat(d){return {'1n':4,'2n.':3,'2n':2,'4n.':1.5,'4n':1,'8n.':.75,'8n':.5,'16n':.25}[d]||1}function rebuildBeats(){let b=0;(data.notes||[]).forEach(n=>{n.beat=Math.round(b*10000)/10000;b+=durBeat(n.duration);n.durationInBeats=durBeat(n.duration)})}
+async function exportVexflowSvgToPdf(vfContainer){
+const svg=vfContainer.querySelector('svg');
+if(!svg)throw new Error('未找到五线谱内容，请先生成旋律');
+if(!window.canvg||!window.canvg.Canvg){return await exportContainerToPdfWithHtml2Canvas(vfContainer)}
+const serializer=new XMLSerializer();
+const svgString=serializer.serializeToString(svg);
+const vb=svg.viewBox&&svg.viewBox.baseVal?svg.viewBox.baseVal:null;
+const svgWidth=Math.ceil(vb?vb.width:(svg.width&&svg.width.baseVal?svg.width.baseVal.value:1200));
+const svgHeight=Math.ceil(vb?vb.height:(svg.height&&svg.height.baseVal?svg.height.baseVal.value:260));
+const scale=2;const canvas=document.createElement('canvas');canvas.width=svgWidth*scale;canvas.height=svgHeight*scale;
+const ctx=canvas.getContext('2d');if(!ctx)throw new Error('无法创建画布上下文');
+ctx.fillStyle='#ffffff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.setTransform(scale,0,0,scale,0,0);
+const v=await window.canvg.Canvg.fromString(ctx,svgString,{ignoreMouse:true,ignoreAnimation:true});await v.render();
+const imgData=canvas.toDataURL('image/png');const {jsPDF}=window.jspdf;const pdf=new jsPDF('p','mm','a4');
+const pageWidth=pdf.internal.pageSize.getWidth(),pageHeight=pdf.internal.pageSize.getHeight();
+const margin=10;let finalW=pageWidth-margin*2;let finalH=(canvas.height*finalW)/canvas.width;const maxH=pageHeight-margin*2;
+if(finalH>maxH){finalH=maxH;finalW=(canvas.width*finalH)/canvas.height}
+pdf.addImage(imgData,'PNG',(pageWidth-finalW)/2,(pageHeight-finalH)/2,finalW,finalH,undefined,'FAST');
+pdf.save(`灵动音符_五线谱_${Date.now()}.pdf`);
+}
+async function exportContainerToPdfWithHtml2Canvas(container){
+const canvas=await html2canvas(container,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false});
+const imgData=canvas.toDataURL('image/png');const {jsPDF}=window.jspdf;const pdf=new jsPDF('p','mm','a4');
+const pageWidth=pdf.internal.pageSize.getWidth(),pageHeight=pdf.internal.pageSize.getHeight();const margin=10;const usableWidth=pageWidth-margin*2;const imgWidth=usableWidth;const imgHeight=canvas.height*imgWidth/canvas.width;const imgY=Math.max(margin,(pageHeight-imgHeight)/2);
+pdf.addImage(imgData,'PNG',margin,imgY,imgWidth,imgHeight,undefined,'FAST');pdf.save(`灵动音符_五线谱_${Date.now()}.pdf`);
+}
+function bindExportButtons(){const j=document.getElementById('exportJianpuBtn'),s=document.getElementById('exportStaffBtn'),m=document.getElementById('exportArrangementMidiBtn');if(j&&!j.dataset.bound){j.addEventListener('click',exportJianpuPdf);j.dataset.bound='1'}if(s&&!s.dataset.bound){s.addEventListener('click',exportStaffPdf);s.dataset.bound='1'}if(m&&!m.dataset.bound){m.addEventListener('click',exportArrangementMidi);m.dataset.bound='1'}}
+document.addEventListener('DOMContentLoaded',()=>{status('正在读取 advanced_arrangement_data...',true);bindScoreTabs();bindExportButtons();renderPresets();updateVols();reloadArrangementData()});
+</script>
+</body>
+</html>
